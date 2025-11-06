@@ -1,15 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 
-namespace PR7
+class Program
 {
-    internal class Program
+    static void Main()
     {
-        static void Main(string[] args)
+        string connectionString = "Data Source=bd-kip.fa.ru;Initial Catalog=Prokofiev_PR7;Persist Security Info=True;User ID=sa;Password=1qaz!QAZ;Encrypt=False";
+
+        using (var connection = new SqlConnection(connectionString))
         {
+            try
+            {
+                connection.Open();
+                Console.WriteLine("Подключение успешно!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка подключения:");
+                Console.WriteLine(ex.Message);
+            }
         }
+
+        Console.ReadKey();
     }
 }
