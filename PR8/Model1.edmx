@@ -1,0 +1,497 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище Prokofiev_PR8Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CartItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CartId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="Qty" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Carts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="Qty" Type="int" Nullable="false" />
+          <Property Name="UnitPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PickupPointId" Type="int" Nullable="false" />
+          <Property Name="TotalAmount" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PickupPoints">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Stock" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_CartItems_Carts">
+          <End Role="Carts" Type="Self.Carts" Multiplicity="1" />
+          <End Role="CartItems" Type="Self.CartItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Carts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CartItems">
+              <PropertyRef Name="CartId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CartItems_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="CartItems" Type="Self.CartItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CartItems">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Carts_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Carts" Type="Self.Carts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Carts">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderItems_Orders">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderItems_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_PickupPoints">
+          <End Role="PickupPoints" Type="Self.PickupPoints" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PickupPoints">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="PickupPointId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище Prokofiev_PR8ModelContainer">
+          <EntitySet Name="CartItems" EntityType="Self.CartItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Carts" EntityType="Self.Carts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderItems" EntityType="Self.OrderItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PickupPoints" EntityType="Self.PickupPoints" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CartItems_Carts" Association="Self.FK_CartItems_Carts">
+            <End Role="Carts" EntitySet="Carts" />
+            <End Role="CartItems" EntitySet="CartItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CartItems_Products" Association="Self.FK_CartItems_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="CartItems" EntitySet="CartItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Carts_Users" Association="Self.FK_Carts_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Carts" EntitySet="Carts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderItems_Orders" Association="Self.FK_OrderItems_Orders">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderItems_Products" Association="Self.FK_OrderItems_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_PickupPoints" Association="Self.FK_Orders_PickupPoints">
+            <End Role="PickupPoints" EntitySet="PickupPoints" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Users" Association="Self.FK_Orders_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Prokofiev_PR8Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CartItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CartId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Qty" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Carts" Relationship="Self.FK_CartItems_Carts" FromRole="CartItems" ToRole="Carts" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_CartItems_Products" FromRole="CartItems" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="Carts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CartItems" Relationship="Self.FK_CartItems_Carts" FromRole="Carts" ToRole="CartItems" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Carts_Users" FromRole="Carts" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="OrderItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Qty" Type="Int32" Nullable="false" />
+          <Property Name="UnitPrice" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_OrderItems_Orders" FromRole="OrderItems" ToRole="Orders" />
+          <NavigationProperty Name="Products" Relationship="Self.FK_OrderItems_Products" FromRole="OrderItems" ToRole="Products" />
+        </EntityType>
+        <EntityType Name="Orders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PickupPointId" Type="Int32" Nullable="false" />
+          <Property Name="TotalAmount" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="OrderItems" Relationship="Self.FK_OrderItems_Orders" FromRole="Orders" ToRole="OrderItems" />
+          <NavigationProperty Name="PickupPoints" Relationship="Self.FK_Orders_PickupPoints" FromRole="Orders" ToRole="PickupPoints" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Orders_Users" FromRole="Orders" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="PickupPoints">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_PickupPoints" FromRole="PickupPoints" ToRole="Orders" />
+        </EntityType>
+        <EntityType Name="Products">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Stock" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CartItems" Relationship="Self.FK_CartItems_Products" FromRole="Products" ToRole="CartItems" />
+          <NavigationProperty Name="OrderItems" Relationship="Self.FK_OrderItems_Products" FromRole="Products" ToRole="OrderItems" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Carts" Relationship="Self.FK_Carts_Users" FromRole="Users" ToRole="Carts" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_Users" FromRole="Users" ToRole="Orders" />
+        </EntityType>
+        <Association Name="FK_CartItems_Carts">
+          <End Role="Carts" Type="Self.Carts" Multiplicity="1" />
+          <End Role="CartItems" Type="Self.CartItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Carts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CartItems">
+              <PropertyRef Name="CartId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CartItems_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="CartItems" Type="Self.CartItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CartItems">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Carts_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Carts" Type="Self.Carts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Carts">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderItems_Orders">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderItems_Products">
+          <End Role="Products" Type="Self.Products" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Products">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_PickupPoints">
+          <End Role="PickupPoints" Type="Self.PickupPoints" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PickupPoints">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="PickupPointId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Orders_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Prokofiev_PR8Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CartItems" EntityType="Self.CartItems" />
+          <EntitySet Name="Carts" EntityType="Self.Carts" />
+          <EntitySet Name="OrderItems" EntityType="Self.OrderItems" />
+          <EntitySet Name="Orders" EntityType="Self.Orders" />
+          <EntitySet Name="PickupPoints" EntityType="Self.PickupPoints" />
+          <EntitySet Name="Products" EntityType="Self.Products" />
+          <EntitySet Name="Users" EntityType="Self.Users" />
+          <AssociationSet Name="FK_CartItems_Carts" Association="Self.FK_CartItems_Carts">
+            <End Role="Carts" EntitySet="Carts" />
+            <End Role="CartItems" EntitySet="CartItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CartItems_Products" Association="Self.FK_CartItems_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="CartItems" EntitySet="CartItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Carts_Users" Association="Self.FK_Carts_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Carts" EntitySet="Carts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderItems_Orders" Association="Self.FK_OrderItems_Orders">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderItems_Products" Association="Self.FK_OrderItems_Products">
+            <End Role="Products" EntitySet="Products" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_PickupPoints" Association="Self.FK_Orders_PickupPoints">
+            <End Role="PickupPoints" EntitySet="PickupPoints" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Users" Association="Self.FK_Orders_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Orders" EntitySet="Orders" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище Prokofiev_PR8ModelContainer" CdmEntityContainer="Prokofiev_PR8Entities">
+          <EntitySetMapping Name="CartItems">
+            <EntityTypeMapping TypeName="Prokofiev_PR8Model.CartItems">
+              <MappingFragment StoreEntitySet="CartItems">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CartId" ColumnName="CartId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Carts">
+            <EntityTypeMapping TypeName="Prokofiev_PR8Model.Carts">
+              <MappingFragment StoreEntitySet="Carts">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderItems">
+            <EntityTypeMapping TypeName="Prokofiev_PR8Model.OrderItems">
+              <MappingFragment StoreEntitySet="OrderItems">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="Prokofiev_PR8Model.Orders">
+              <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="PickupPointId" ColumnName="PickupPointId" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PickupPoints">
+            <EntityTypeMapping TypeName="Prokofiev_PR8Model.PickupPoints">
+              <MappingFragment StoreEntitySet="PickupPoints">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="Prokofiev_PR8Model.Products">
+              <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="Prokofiev_PR8Model.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
