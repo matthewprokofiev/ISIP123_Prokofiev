@@ -1,0 +1,71 @@
+﻿<Page x:Class="PR12.Step3Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step3Page">
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Ваша конфигурация" Style="{StaticResource HeaderStyle}"/>
+
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Базовая модель:" FontWeight="Bold"/>
+                <TextBlock Grid.Column="1" Text="{Binding SelectedModel.BasePrice, StringFormat=C}"/>
+            </Grid>
+            <TextBlock Text="{Binding SelectedModel.Name}" Margin="10,0,0,10"/>
+
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Двигатель:" FontWeight="Bold"/>
+                <TextBlock Grid.Column="1" Text="{Binding SelectedEngine.ExtraPrice, StringFormat=C}"/>
+            </Grid>
+            <TextBlock Text="{Binding SelectedEngine.Name}" Margin="10,0,0,10"/>
+
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Цвет:" FontWeight="Bold"/>
+                <TextBlock Grid.Column="1" Text="{Binding SelectedColor.ExtraPrice, StringFormat=C}"/>
+            </Grid>
+            <TextBlock Text="{Binding SelectedColor.Name}" Margin="10,0,0,10"/>
+
+            <TextBlock Text="Опции:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <ItemsControl ItemsSource="{Binding SelectedOptions}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="10,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Price, StringFormat=C}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Separator Margin="0,20"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="ИТОГО:" FontSize="20" FontWeight="Bold"/>
+                <TextBlock Grid.Column="1" Text="{Binding TotalPrice, StringFormat=C}" FontSize="20" FontWeight="Bold" Foreground="#007ACC"/>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,30,0,0">
+                <Button Content="Назад" Click="BtnBack_Click" Width="100"/>
+                <Button Content="Далее (Кредит)" Click="BtnNext_Click" Width="120"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,126 +1,106 @@
-﻿using PR12;
-using PR12.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace PR12
 {
-    // --- Справочные данные ---
+    // Базовый класс для реализации уведомлений об изменениях (MVVM pattern)
+    public class ViewModelBase : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+    }
+
+    // Простые модели данных
     public class CarModel
     {
         public string Name { get; set; }
         public decimal BasePrice { get; set; }
-        public string ImagePath { get; set; } // Для расширения, если нужно
-        public override string ToString() => $"{Name} (База: {BasePrice:C0})";
+        public List<EngineType> AvailableEngines { get; set; }
     }
 
     public class EngineType
     {
-        public string Name { get; set; }
-        public decimal PriceModifier { get; set; }
-        public override string ToString() => $"{Name} (+{PriceModifier:C0})";
+        public string Name { get; set; } // Например, "2.0L Turbo"
+        public decimal ExtraPrice { get; set; }
     }
 
     public class CarColor
     {
         public string Name { get; set; }
-        public string HexCode { get; set; } // Для отображения цвета
-        public decimal PriceModifier { get; set; }
+        public decimal ExtraPrice { get; set; }
+        public string HexCode { get; set; } // Для отображения цвета (опционально)
     }
 
-    public class CarOption : ObservableObject
+    public class CarOption
     {
         public string Name { get; set; }
         public decimal Price { get; set; }
-
-        // Поле для UI (выбрана опция или нет)
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool IsSelected { get; set; } // Для привязки чекбокса
     }
 
-    // --- Единый объект конфигурации ---
-    public class CarConfiguration : ObservableObject
+    // ГЛАВНЫЙ КЛАСС КОНФИГУРАЦИИ
+    public class CarConfiguration : ViewModelBase
     {
         private CarModel _selectedModel;
         private EngineType _selectedEngine;
         private CarColor _selectedColor;
-        private int _creditTermMonths = 36; // Default
-        private double _initialPaymentPercent = 20; // Default %
+        private int _creditTermMonths = 24; // Дефолт
+        private double _downPaymentPercent = 20; // Дефолт %
 
-        // Контактные данные
-        private string _customerName;
-        private string _customerPhone;
-        private string _customerEmail;
+        // Данные клиента
+        public string ClientName { get; set; }
+        public string ClientPhone { get; set; }
+        public string ClientEmail { get; set; }
 
-        public CarConfiguration()
-        {
-            // Инициализация коллекций опций будет в VM
-            SelectedOptions = new ObservableCollection<CarOption>();
-        }
+        public ObservableCollection<CarOption> SelectedOptions { get; set; } = new ObservableCollection<CarOption>();
 
         public CarModel SelectedModel
         {
             get => _selectedModel;
-            set { _selectedModel = value; OnPropertyChanged(); Recalculate(); }
+            set { _selectedModel = value; OnPropertyChanged(); OnPropertyChanged(nameof(TotalPrice)); RecalculateCredit(); }
         }
 
         public EngineType SelectedEngine
         {
             get => _selectedEngine;
-            set { _selectedEngine = value; OnPropertyChanged(); Recalculate(); }
+            set { _selectedEngine = value; OnPropertyChanged(); OnPropertyChanged(nameof(TotalPrice)); RecalculateCredit(); }
         }
 
         public CarColor SelectedColor
         {
             get => _selectedColor;
-            set { _selectedColor = value; OnPropertyChanged(); Recalculate(); }
+            set { _selectedColor = value; OnPropertyChanged(); OnPropertyChanged(nameof(TotalPrice)); RecalculateCredit(); }
         }
 
-        // Коллекция всех доступных опций, где мы будем менять флаг IsSelected
-        public ObservableCollection<CarOption> SelectedOptions { get; set; }
-
-        // --- Финансы ---
-        private decimal _totalPrice;
-        public decimal TotalPrice
-        {
-            get => _totalPrice;
-            private set { _totalPrice = value; OnPropertyChanged(); RecalculateCredit(); }
-        }
-
-        // Кредитные параметры
+        // Параметры кредита
         public int CreditTermMonths
         {
             get => _creditTermMonths;
             set { _creditTermMonths = value; OnPropertyChanged(); RecalculateCredit(); }
         }
 
-        public double InitialPaymentPercent
+        public double DownPaymentPercent
         {
-            get => _initialPaymentPercent;
-            set { _initialPaymentPercent = value; OnPropertyChanged(); RecalculateCredit(); }
+            get => _downPaymentPercent;
+            set { _downPaymentPercent = value; OnPropertyChanged(); RecalculateCredit(); }
         }
 
-        // Результаты расчета кредита
-        private decimal _downPaymentAmount;
-        public decimal DownPaymentAmount
+        // Вычисляемые свойства для кредита
+        private decimal _creditDownPaymentAmount;
+        public decimal CreditDownPaymentAmount
         {
-            get => _downPaymentAmount;
-            set { _downPaymentAmount = value; OnPropertyChanged(); }
+            get => _creditDownPaymentAmount;
+            set { _creditDownPaymentAmount = value; OnPropertyChanged(); }
         }
 
-        private decimal _creditAmount;
+        private decimal _creditAmount; // Тело кредита
         public decimal CreditAmount
         {
             get => _creditAmount;
@@ -134,76 +114,99 @@ namespace PR12
             set { _monthlyPayment = value; OnPropertyChanged(); }
         }
 
-        // --- Контакты ---
-        public string CustomerName
+        public decimal TotalPrice
         {
-            get => _customerName;
-            set { _customerName = value; OnPropertyChanged(); }
-        }
-        public string CustomerPhone
-        {
-            get => _customerPhone;
-            set { _customerPhone = value; OnPropertyChanged(); }
-        }
-        public string CustomerEmail
-        {
-            get => _customerEmail;
-            set { _customerEmail = value; OnPropertyChanged(); }
-        }
-
-        // --- Логика расчетов ---
-
-        public void Recalculate()
-        {
-            decimal price = 0;
-            if (SelectedModel != null) price += SelectedModel.BasePrice;
-            if (SelectedEngine != null) price += SelectedEngine.PriceModifier;
-            if (SelectedColor != null) price += SelectedColor.PriceModifier;
-
-            if (SelectedOptions != null)
+            get
             {
-                foreach (var opt in SelectedOptions)
-                {
-                    if (opt.IsSelected) price += opt.Price;
-                }
+                decimal total = 0;
+                if (SelectedModel != null) total += SelectedModel.BasePrice;
+                if (SelectedEngine != null) total += SelectedEngine.ExtraPrice;
+                if (SelectedColor != null) total += SelectedColor.ExtraPrice;
+                if (SelectedOptions != null) total += SelectedOptions.Sum(o => o.Price);
+                return total;
             }
+        }
 
-            TotalPrice = price;
+        public void UpdateOptions(IEnumerable<CarOption> options)
+        {
+            SelectedOptions.Clear();
+            foreach (var opt in options)
+            {
+                if (opt.IsSelected) SelectedOptions.Add(opt);
+            }
+            OnPropertyChanged(nameof(TotalPrice));
+            RecalculateCredit();
         }
 
         private void RecalculateCredit()
         {
-            if (TotalPrice == 0) return;
+            // S = C - P
+            decimal price = TotalPrice;
+            CreditDownPaymentAmount = price * (decimal)(DownPaymentPercent / 100.0);
+            CreditAmount = price - CreditDownPaymentAmount;
 
-            // 1. Первоначальный взнос
-            DownPaymentAmount = TotalPrice * (decimal)(InitialPaymentPercent / 100.0);
-
-            // 2. Сумма кредита (S = C - P)
-            CreditAmount = TotalPrice - DownPaymentAmount;
-
-            // 3. Ежемесячный платеж
-            // Формула: A = S * (i * (1+i)^n) / ((1+i)^n - 1)
-            // r - годовая ставка. Допустим 15% (0.15)
+            // Расчет платежа
+            // i = r / 100 / 12. Пусть ставка 15% годовых (захардкожена или можно вынести)
             double annualRate = 15.0;
-            double r = annualRate;
-
-            // i = r / 100 / 12
-            double i = r / 100.0 / 12.0;
+            double i = (annualRate / 100.0) / 12.0;
             double n = CreditTermMonths;
-            double S = (double)CreditAmount;
 
-            if (S <= 0)
+            if (CreditAmount > 0)
+            {
+                // Формула: A = S * (i * (1+i)^n) / ((1+i)^n - 1)
+                double coef = Math.Pow(1 + i, n);
+                double payment = (double)CreditAmount * (i * coef) / (coef - 1);
+                MonthlyPayment = (decimal)payment;
+            }
+            else
             {
                 MonthlyPayment = 0;
-                return;
             }
+        }
+    }
 
-            double numerator = i * Math.Pow(1 + i, n);
-            double denominator = Math.Pow(1 + i, n) - 1;
+    // Статический репозиторий данных (Mock Data)
+    public static class DataRepository
+    {
+        public static List<CarModel> GetModels()
+        {
+            return new List<CarModel>
+            {
+                new CarModel { Name = "Sedan Standard", BasePrice = 1500000, AvailableEngines = new List<EngineType> {
+                    new EngineType { Name = "1.6L (100 л.с.)", ExtraPrice = 0 },
+                    new EngineType { Name = "2.0L (150 л.с.)", ExtraPrice = 150000 }
+                }},
+                new CarModel { Name = "SUV Premium", BasePrice = 2500000, AvailableEngines = new List<EngineType> {
+                    new EngineType { Name = "2.0L Turbo", ExtraPrice = 0 },
+                    new EngineType { Name = "3.0L Diesel", ExtraPrice = 300000 }
+                }},
+                 new CarModel { Name = "Sport Coupe", BasePrice = 3200000, AvailableEngines = new List<EngineType> {
+                    new EngineType { Name = "3.5L V6", ExtraPrice = 0 },
+                    new EngineType { Name = "5.0L V8", ExtraPrice = 600000 }
+                }}
+            };
+        }
 
-            double A = S * (numerator / denominator);
+        public static List<CarColor> GetColors()
+        {
+            return new List<CarColor>
+            {
+                new CarColor { Name = "Белый", ExtraPrice = 0, HexCode="#FFFFFF" },
+                new CarColor { Name = "Черный Металлик", ExtraPrice = 20000, HexCode="#000000" },
+                new CarColor { Name = "Красный Перламутр", ExtraPrice = 35000, HexCode="#FF0000" },
+                new CarColor { Name = "Синий Космос", ExtraPrice = 25000, HexCode="#0000FF" }
+            };
+        }
 
-            MonthlyPayment = (decimal)A;
+        public static List<CarOption> GetOptions()
+        {
+            return new List<CarOption>
+            {
+                new CarOption { Name = "Кожаный салон", Price = 100000 },
+                new CarOption { Name = "Панорамная крыша", Price = 80000 },
+                new CarOption { Name = "Зимний пакет", Price = 45000 },
+                new CarOption { Name = "Премиум аудиосистема", Price = 60000 }
+            };
         }
     }
 }

@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PR12;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PR12
 {
-        public partial class MainWindow : Window
+    public partial class MainWindow : Window
+    {
+        // Глобальный объект конфигурации
+        public CarConfiguration Config { get; set; }
+
+        public MainWindow()
         {
-            public MainWindow()
-            {
-                InitializeComponent();
-            }
+            InitializeComponent();
+            Config = new CarConfiguration();
+
+            // Запуск первого шага
+            MainFrame.Navigate(new Step1Page(Config));
         }
+
+        // Метод для обновления прогресс-бара, вызываемый из страниц
+        public void UpdateProgress(int stepNumber)
+        {
+            pbProgress.Value = stepNumber;
+            txtStepInfo.Text = $"Шаг {stepNumber} из 5";
+        }
+    }
 }
