@@ -1,0 +1,36 @@
+﻿<Page x:Class="PR14.MoviePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PR14"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MoviePage">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="10">
+            <Image Name="ImgMovie" Height="300"/>
+            <TextBlock Name="TxtTitle" FontWeight="Bold" FontSize="20"/>
+            <TextBlock Name="TxtDesc" TextWrapping="Wrap"/>
+            <TextBlock Name="TxtRating"/>
+            <Button Content="Назад" Click="BtnBack_Click" Margin="0,20"/>
+        </StackPanel>
+
+        <ListView Name="LViewSessions" Grid.Column="1" Margin="10" MouseDoubleClick="LViewSessions_MouseDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Дата" DisplayMemberBinding="{Binding SessionDate, StringFormat=dd.MM.yyyy HH:mm}"/>
+                    <GridViewColumn Header="Зал" DisplayMemberBinding="{Binding Halls.Name}"/>
+                    <GridViewColumn Header="Тип зала" DisplayMemberBinding="{Binding Halls.Category}"/>
+                    <GridViewColumn Header="Цена" DisplayMemberBinding="{Binding Price}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Page>

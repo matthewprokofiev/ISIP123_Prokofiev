@@ -7,27 +7,29 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PR13
+namespace PR14
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Orders
+    public partial class Movies
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Orders()
+        public Movies()
         {
-            this.OrderDetails = new HashSet<OrderDetails>();
+            this.Sessions = new HashSet<Sessions>();
         }
     
         public int Id { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerEmail { get; set; }
-        public string CustomerAddress { get; set; }
-        public Nullable<System.DateTime> OrderDate { get; set; }
-        public Nullable<decimal> TotalPrice { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ImagePath { get; set; }
+        public Nullable<double> Rating { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<int> AgeRating { get; set; }
+        public string Genre { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<Sessions> Sessions { get; set; }
     }
 }

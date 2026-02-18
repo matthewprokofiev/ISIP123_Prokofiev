@@ -7,25 +7,24 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PR13
+namespace PR14
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Products
+    public partial class Halls
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Products()
+        public Halls()
         {
-            this.OrderDetails = new HashSet<OrderDetails>();
+            this.Sessions = new HashSet<Sessions>();
         }
     
         public int Id { get; set; }
-        public string Title { get; set; }
-        public Nullable<decimal> Price { get; set; }
-        public string ImagePath { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<Sessions> Sessions { get; set; }
     }
 }
