@@ -15,7 +15,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Margin="10">
-            <Image Name="ImgMovie" Height="300"/>
+            <Image Name="ImgMovie" Height="300" Source="{Binding ImagePath}"/>
             <TextBlock Name="TxtTitle" FontWeight="Bold" FontSize="20"/>
             <TextBlock Name="TxtDesc" TextWrapping="Wrap"/>
             <TextBlock Name="TxtRating"/>

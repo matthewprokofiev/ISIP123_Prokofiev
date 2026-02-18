@@ -28,8 +28,11 @@ namespace PR14
             _session = session;
             _seat = seat;
 
-            // Вывод информации (предполагаем наличие TextBlock-ов в XAML)
-            // TxtInfo.Text = ...
+            TxtMovieTitle.Text = _session.Movies.Title;
+            TxtHall.Text = _session.Halls.Name;
+            TxtDateTime.Text = _session.SessionDate.ToString();
+            TxtSeat.Text = _seat.ToString();
+            TxtTotalPrice.Text = _session.Price.ToString();
         }
 
         private void BtnConfirm_Click(object sender, RoutedEventArgs e)

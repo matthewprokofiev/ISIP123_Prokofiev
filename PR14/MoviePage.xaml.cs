@@ -25,14 +25,13 @@ namespace PR14
         {
             InitializeComponent();
             _movie = movie;
-            DataContext = _movie; // Простая привязка
+            DataContext = _movie;
 
-            // Заполняем поля (или используем Binding в XAML)
+
             TxtTitle.Text = _movie.Title;
             TxtDesc.Text = _movie.Description;
             TxtRating.Text = $"Рейтинг: {_movie.Rating}";
 
-            // Загрузка сеансов
             var db = Manager.GetContext();
             LViewSessions.ItemsSource = db.Sessions.Where(s => s.MovieId == _movie.Id).ToList();
         }

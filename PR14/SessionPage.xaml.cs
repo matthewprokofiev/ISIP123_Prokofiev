@@ -33,25 +33,24 @@ namespace PR14
         private void LoadSeats()
         {
             var db = Manager.GetContext();
-            // Получаем занятые места
+
             var takenSeats = db.Tickets.Where(t => t.SessionId == _session.Id).Select(t => t.SeatNumber).ToList();
 
-            // Допустим, в зале 20 мест (фиксировано для простоты)
             for (int i = 1; i <= 20; i++)
             {
                 Button btn = new Button();
                 btn.Content = i.ToString();
                 btn.Margin = new Thickness(5);
-                btn.Tag = i; // Храним номер места в Tag
+                btn.Tag = i;
 
                 if (takenSeats.Contains(i))
                 {
                     btn.IsEnabled = false;
-                    btn.Background = Brushes.Red; // Занято
+                    btn.Background = Brushes.White;
                 }
                 else
                 {
-                    btn.Background = Brushes.Green; // Свободно
+                    btn.Background = Brushes.Green;
                     btn.Click += SeatBtn_Click;
                 }
                 SeatContainer.Children.Add(btn);
@@ -63,14 +62,21 @@ namespace PR14
             var btn = sender as Button;
             _selectedSeat = (int)btn.Tag;
 
-            // Сброс цветов всех кнопок (упрощенно)
             foreach (var child in SeatContainer.Children)
             {
                 if (child is Button b && b.IsEnabled) b.Background = Brushes.Green;
             }
 
-            btn.Background = Brushes.Gray; // Выбрано
+            btn.Background = Brushes.Gray;
             TxtPrice.Text = $"Цена: {_session.Price} руб.";
+        }
+
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            if (Manager.MainFrame.CanGoBack)
+            {
+                Manager.MainFrame.GoBack();
+            }
         }
 
         private void BtnBook_Click(object sender, RoutedEventArgs e)

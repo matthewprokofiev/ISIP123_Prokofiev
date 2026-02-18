@@ -32,14 +32,14 @@ namespace PR14
 
         private void UpdateMovies()
         {
+            if (LViewMovies == null || TxtSearch == null || ComboSort == null) return;
+
             var db = Manager.GetContext();
             var currentMovies = db.Movies.ToList();
 
-            // Поиск
             if (!string.IsNullOrWhiteSpace(TxtSearch.Text))
                 currentMovies = currentMovies.Where(p => p.Title.ToLower().Contains(TxtSearch.Text.ToLower())).ToList();
 
-            // Сортировка
             if (ComboSort.SelectedIndex == 1)
                 currentMovies = currentMovies.OrderBy(p => p.Title).ToList();
             if (ComboSort.SelectedIndex == 2)

@@ -27,7 +27,6 @@ namespace PR14
 
         private void BtnRegister_Click(object sender, RoutedEventArgs e)
         {
-            // Простая валидация
             if (string.IsNullOrWhiteSpace(TxtLogin.Text) || string.IsNullOrWhiteSpace(TxtPassword.Password))
             {
                 MessageBox.Show("Заполните все поля!");
@@ -42,14 +41,13 @@ namespace PR14
 
             var db = Manager.GetContext();
 
-            // Проверка на уникальность логина
             if (db.Users.Any(u => u.Login == TxtLogin.Text))
             {
                 MessageBox.Show("Пользователь с таким логином уже существует!");
                 return;
             }
 
-            // Создаем нового пользователя
+
             Users newUser = new Users
             {
                 Login = TxtLogin.Text,
