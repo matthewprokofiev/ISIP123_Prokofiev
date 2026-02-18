@@ -19,6 +19,10 @@
 
         <UniformGrid Name="SeatContainer" Grid.Row="1" Columns="5" Margin="20"/>
 
+        <DockPanel Grid.Row="2" Margin="10" HorizontalAlignment="Left">
+            <Button Content="Назад" Click="BtnBack_Click" Width="80" Height="30" DockPanel.Dock="Left"/>
+        </DockPanel>
+
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <TextBlock Name="TxtPrice" VerticalAlignment="Center" Margin="10"/>
             <Button Content="Оформить билет" Click="BtnBook_Click" Width="150" Height="30"/>

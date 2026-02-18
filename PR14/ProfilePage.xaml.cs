@@ -26,9 +26,9 @@ namespace PR14
             TxtUser.Text = $"Пользователь: {Manager.CurrentUser.Login}";
 
             var db = Manager.GetContext();
-            // Загружаем билеты текущего пользователя
+
             DGridTickets.ItemsSource = db.Tickets
-                .Include("Sessions.Movies") // Жадная загрузка для вывода названий
+                .Include("Sessions.Movies")
                 .Where(t => t.UserId == Manager.CurrentUser.Id)
                 .ToList();
         }

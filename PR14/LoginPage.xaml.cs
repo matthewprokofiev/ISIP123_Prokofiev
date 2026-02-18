@@ -28,12 +28,11 @@ namespace PR14
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             var db = Manager.GetContext();
-            // Ищем пользователя в БД
             var user = db.Users.FirstOrDefault(u => u.Login == TxtLogin.Text && u.Password == TxtPassword.Password);
 
             if (user != null)
             {
-                Manager.CurrentUser = user; // Сохраняем вошедшего пользователя
+                Manager.CurrentUser = user;
                 MessageBox.Show("Успешный вход!");
                 Manager.MainFrame.Navigate(new MainPage());
             }
