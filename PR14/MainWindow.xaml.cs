@@ -15,14 +15,13 @@ using System.Windows.Shapes;
 
 namespace PR14
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            Manager.MainFrame = MainFrame;
+            Manager.MainFrame.Navigate(new MainPage());
         }
     }
 }

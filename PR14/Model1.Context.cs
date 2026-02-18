@@ -7,16 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PR13
+namespace PR14
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class ShopDBEntities : DbContext
+    public partial class CinemaEntities : DbContext
     {
-        public ShopDBEntities()
-            : base("name=ShopDBEntities")
+        public CinemaEntities()
+            : base("name=CinemaEntities")
         {
         }
     
@@ -25,8 +25,10 @@ namespace PR13
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<OrderDetails> OrderDetails { get; set; }
-        public virtual DbSet<Orders> Orders { get; set; }
-        public virtual DbSet<Products> Products { get; set; }
+        public virtual DbSet<Halls> Halls { get; set; }
+        public virtual DbSet<Movies> Movies { get; set; }
+        public virtual DbSet<Sessions> Sessions { get; set; }
+        public virtual DbSet<Tickets> Tickets { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
     }
 }
