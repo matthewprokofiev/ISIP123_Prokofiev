@@ -1,0 +1,15 @@
+﻿<Window x:Class="PR15.SavedAssembliesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Сохраненные сборки" Height="450" Width="600">
+    <Grid Margin="10">
+        <ListView x:Name="AssembliesList">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Название" DisplayMemberBinding="{Binding name}" Width="200"/>
+                    <GridViewColumn Header="Автор" DisplayMemberBinding="{Binding author}" Width="150"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>
