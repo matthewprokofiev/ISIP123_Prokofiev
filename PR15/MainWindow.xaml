@@ -43,8 +43,15 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                <TextBlock Text="Доступные комплектующие" FontSize="22" FontWeight="Bold" Margin="0,0,0,10" Foreground="#333"/>
+            <Grid>
+                <TextBlock Text="Доступные комплектующие" FontSize="22" FontWeight="Bold" Foreground="#333" Width="356" Margin="1,0,356,105"/>
+                <Button Content="Посмотреть сохранённые сборки" Height="40" 
+        Background="#3498DB" Foreground="White" FontSize="14" FontWeight="Bold" 
+        Click="ViewSaved_Click" Margin="472,0,0,98"/>
+            </Grid>
+            <StackPanel Grid.Row="0" Margin="0,60,0,10">
+
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -59,7 +66,7 @@
                 </Grid>
             </StackPanel>
 
-            <ListView x:Name="PartsListView" Grid.Row="1" BorderBrush="LightGray" BorderThickness="1">
+            <ListView x:Name="PartsListView" BorderBrush="LightGray" BorderThickness="1" Margin="0,105,0,33" Grid.RowSpan="2">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Фото" Width="60">

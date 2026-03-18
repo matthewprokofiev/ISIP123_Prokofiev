@@ -171,5 +171,11 @@ namespace PR15
             }
             catch (Exception ex) { MessageBox.Show("Ошибка при сохранении: " + ex.Message); }
         }
+
+        private void ViewSaved_Click(object sender, RoutedEventArgs e)
+        {
+            var savedWindow = new SavedAssembliesWindow();
+            savedWindow.ShowDialog();
+        }
     }
 }
