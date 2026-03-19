@@ -44,7 +44,7 @@
             </Grid.RowDefinitions>
 
             <Grid>
-                <TextBlock Text="Доступные комплектующие" FontSize="22" FontWeight="Bold" Foreground="#333" Width="356" Margin="1,0,356,105"/>
+                <TextBlock Text="Доступные комплектующие" FontSize="22" FontWeight="Bold" Foreground="#333" Width="356" Margin="0,0,357,105"/>
                 <Button Content="Посмотреть сохранённые сборки" Height="40" 
         Background="#3498DB" Foreground="White" FontSize="14" FontWeight="Bold" 
         Click="ViewSaved_Click" Margin="472,0,0,98"/>

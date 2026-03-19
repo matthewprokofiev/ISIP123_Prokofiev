@@ -23,8 +23,20 @@ namespace PR15
         {
             try
             {
-                ManufacturerFilter.ItemsSource = db.manufacturer_.ToList();
-                var partsFromDb = db.basepart_.Include("manufacturer_").ToList();
+                var partsFromDb = db.basepart_
+                    .Include("manufacturer_")
+                    .Include("parttype_")
+                    .Include("cpu_")
+                    .Include("gpu_")
+                    .Include("motherboard_")
+                    .Include("ram_")
+                    .Include("powersupply_")
+                    .Include("processorcooler_")
+                    .Include("storagedevice_")
+                    .Include("case_")
+                    .ToList();
+
+                allParts.Clear();
                 foreach (var p in partsFromDb)
                 {
                     allParts.Add(new PartItem
@@ -32,15 +44,43 @@ namespace PR15
                         Id = p.id,
                         Name = p.name,
                         Manufacturer = p.manufacturer_.name,
-                        Description = $"Комплектующее категории {p.parttype_.name}",
                         Price = (decimal)p.price,
                         ImagePath = p.image,
-                        BasePart = p
+                        BasePart = p,
+                        Description = GenerateTechnicalDescription(p)
                     });
                 }
                 PartsListView.ItemsSource = allParts;
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex) { MessageBox.Show("Ошибка: " + ex.Message); }
+        }
+        private string GenerateTechnicalDescription(basepart_ p)
+        {
+            if (p.cpu_ != null)
+                return $"Ядер: {p.cpu_.numberofcores}, Потоков: {p.cpu_.thermalpower}, Частота d: {p.cpu_.maxcorefrequency} GHz";
+
+            if (p.gpu_ != null)
+                return $"Память: {p.gpu_.videomemory} ГБ, Реком. БП: {p.gpu_.recommendpower}W";
+
+            if (p.motherboard_ != null)
+                return $"Сокет: {p.motherboard_.socket_.name}, Чипсет: {p.motherboard_.socket_.name}, Тип RAM: {p.motherboard_.memorytype_.name}";
+
+            if (p.ram_ != null)
+                return $"Объем: {p.ram_.capacity} ГБ, Частота: {p.ram_.ghz} MHz, Тип: {p.ram_.memorytype_.name}";
+
+            if (p.powersupply_ != null)
+                return $"Мощность: {p.powersupply_.power}W, Сертификат: {p.powersupply_.certificate_.name}";
+
+            if (p.storagedevice_ != null)
+                return $"Объем: {p.storagedevice_.capacity} ГБ, Интерфейс: {p.storagedevice_.storagedeviceinterface_.name}";
+
+            if (p.processorcooler_ != null)
+                return $"Охладительные трубки: {p.processorcooler_.heatpipes}, Максимальная скорость: {p.processorcooler_.maxspeed}rpm";
+
+            if (p.case_ != null)
+                return $"Слотов расширения: {p.case_.expansionslots}, Количество куллеров: {p.case_.fans}, Размер корпуса: {p.case_.casesize_.name}";
+
+            return "Характеристики отсутствуют";
         }
 
         private void RefreshCart()
